@@ -10,7 +10,7 @@
 <input type="text" id="gituname" placeholder="Enter Github UserName" id="gituname" value="parthisri744" class="form-control">
 </p>
 <input type="submit" value="Get Repository" id="btn_get_repos" class="btn btn-primary" />
-<input type="submit" value="View Details" class="btn btn-dark" id="view_details">
+<input type="submit" value="View Details" class="btn btn-dark" id="view_details" data-toggle="modal" data-target="#exampleModal">
 <input type="submit" value="Add" class="btn btn-info">
 <input type="submit" value="commit" class="btn btn-secondary">
 <input type="submit" value="Create" class="btn btn-success">
@@ -19,6 +19,19 @@
 </div>
 <div id="repo_count"></div>
 <div id="repo_list"></div>
+ <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="examplemodellabel">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+	<div class="modal-content">
+
+	<div class="modal-body">
+	   <div id="modelc"></div>
+	</div>
+	<div class="modal-footer">
+	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+    </div>	
+	</div>
+	</div>
+	</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
 <script>
 $(document).ready(function(){
@@ -69,14 +82,17 @@ $('#view_details').click(function(){
 			url: "https://api.github.com/repos/"+username+"/"+repo_name,
 			dataType: "json",
 			success: function(responce) {
-			  $(".model").append(
+			  $("#modelc").empty();
+			  $("#modelc").append(
 			    "Name :"+responce.name+"<br/>"+
 				"URL  :"+responce.url+"<br/>"+
 				"Description  :"+responce.description+"<br/>"+
 				"Created Time  :"+responce.created_at+"<br/>"+
 				"Updated Time  :"+responce.updated_at+"<br/>"+
 				"pushed Time  :"+responce.pushed_at+"<br/>"+
-				"Clone   :  <a href='"+responce.pushed_at+"'>
+				"Clone   : "+responce.clone_ur+"<br/>"+
+				"Size  :"+responce.size+"<br/>"+
+				"Private :"+responce.private+"<br/>"
  			  );
 			}
 		});
