@@ -17,14 +17,16 @@
 <input type="submit" value="push" class="btn btn-dark">
 <input type="submit" value="pull" class="btn btn-warning">
 </div>
+<div class="alert alert-success">
 <div id="repo_count"></div>
 <div id="repo_list"></div>
+</div>
  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="examplemodellabel">
 	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 	<div class="modal-content">
-
+	<div class="model-header"><h2 style="text-transform: capitalize;text-align:center" id="model-title"></h2></div>
 	<div class="modal-body">
-	   <div id="modelc"></div>
+	   <div class="alert alert-primary" role="alert" id="modelc"></div>
 	</div>
 	<div class="modal-footer">
 	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -53,7 +55,7 @@ $("#btn_get_repos").click(function() {
 				console.log("responce length"+ilength);
 				$("#repo_list").append(
 				    
-                    "<li><input type='checkbox' id='repo' value='"+result[i].name+"' class='checkbox'><a href='#' >" +
+                    "<li><input type='checkbox' id='repo' value='"+result[i].name+"' class='checkbox' style='width:20px;height:20px;'><a href='#' >" +
                     result[i].name +"</a></li>"
                 );
             //    $("#repo_list").append(
@@ -83,6 +85,8 @@ $('#view_details').click(function(){
 			dataType: "json",
 			success: function(responce) {
 			  $("#modelc").empty();
+			  $("#model-title").empty();
+			  console.log("resonce length"+responce.length);
 			  $("#modelc").append(
 			    "Name :"+responce.name+"<br/>"+
 				"URL  :"+responce.url+"<br/>"+
@@ -94,6 +98,8 @@ $('#view_details').click(function(){
 				"Size  :"+responce.size+"<br/>"+
 				"Private :"+responce.private+"<br/>"
  			  );
+			  
+			  $("#model-title").append(responce.owner['login']+"-"+responce.name);
 			}
 		});
 		//console.log("https://api.github.com/repos/"+username+"/"+repo_name);
