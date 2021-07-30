@@ -1,39 +1,62 @@
 <?php
+require_once 'config.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-$server="localhost";
-$user="root";
-$password="rootvm@kms";
-$database="parthisri";
-try{
-$db =new PDO("mysql:host=$server;dbname=$database",$user,$password);
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $alldata = json_decode(file_get_contents("php://input"));
 //var_dump($alldata);
+$output=[];
 foreach($alldata as $key => $value){
 	$name=$value->name;
 	$price=$value->price;
-	//echo "Name :".$name."Price :".$price;	
 	$data = array(
-            ':name'=>$name,
-            ':price' => $price
+            'name'=>$name,
+            'price' => $price
      );
-	//echo "Data value".var_dump($data);
-	 $sql = "INSERT INTO items(name,price) VALUES(:name,:price)";
-	 echo "Sql   :".$sql;
-	 $stmt=$db->prepare($sql);
-	 $stmt->execute($data);
-	// if($stmt->execute($data)){
-	//	$message "Inserted Successfuly";		
-	// }else {
-	//	 $message= "Data is Not Inserted";
-	// }
-	// $output = array('message'=>$message);
-	 //echo json_encode($output);
+        //echo  "ID :-".$value->ID;
+     if(isset($value->ID)){
+       $output = update_data($db,$data,$value->ID);
+     }else{
+       $output = insert_data($db,$data);  
+     }
 }
-var_dump($alldata);
-}catch (PDOException $e){
-	echo "Error :".$e->getMessage();	
+
+function update_data($db,$data,$id){
+    //print_r($data);
+     $sql = "UPDATE items SET name=:name,price=:price WHERE ID=$id";
+     echo "SQL :".$sql;
+     $stmt=$db->prepare($sql);
+     //echo "Array Element :".$data['name'];
+     $stmt->bindParam(":name",$data['name']);
+     $stmt->bindParam(":price",$data['price']);
+     try{
+     $result=$stmt->execute();
+     
+     if($result){
+		$output ="Update Successfuly";		
+	 }else {
+		 $output = "Data is Not Update";
+	 }
+     } catch (PDOException $e){
+         echo "Error".$e->getMessage();
+     }
+     return $output;
 }
+
+function insert_data($db,$data){
+    
+     $sql = "INSERT INTO items(name,price) VALUES(:name,:price)";
+     $stmt=$db->prepare($sql);
+     $stmt->bindParam(":name",$data['name']);
+     $stmt->bindParam(":price",$data['price']);
+     $result=$stmt->execute($data);
+     if($result){
+		$output ="Inserted Successfuly";		
+	 }else {
+		 $output = "Data is Not Inserted";
+	 }
+     return $output;
+}
+
+//var_dump($alldata);
 ?>
